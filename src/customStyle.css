@@ -1,0 +1,39 @@
+.custom-dropdown {
+  width: 100px;
+  /* Customize the desired width */
+  height: auto;
+  background-color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+
+.editor-wrapper {
+  border: 1px solid #ccc;
+  /* padding: 10px; */
+}
+
+.editor-main {
+  min-height: 200px;
+  padding: 10px;
+  border: 1px solid #000;
+  background-color: #000;
+  color: white;
+}
+
+.editor-toolbar {
+  border: 1px solid gray;
+  /* background-color: #313037; */
+  background-color: lightgray;
+  padding: 5px;
+}
+
+.rdw-editor-toolbar {
+  margin: 0;
+}
+
+.rdw-option-wrapper {
+  border: none;
+  background: none;
+}
