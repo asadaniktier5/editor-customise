@@ -1,8 +1,9 @@
-import { useCallback } from 'react'; // Import useCallback hook
+import { useCallback, useState } from 'react'; // Import useCallback hook
 import { EditorState, Modifier } from 'draft-js'; // Import EditorState and Modifier
 import "./SuggestionList.css";
 
-const SuggestionList = ({ positions, spinTax, editorRef, setEditorState }) => {
+const SuggestionList = ({ positions, spinTax, editorRef, setEditorState, setShowSuggestions }) => {
+    const [spinTaxData, setSpinTaxData] = useState([...spinTax]);
 
     /**
      * ---- Handle Suggestion Select ----
@@ -43,17 +44,42 @@ const SuggestionList = ({ positions, spinTax, editorRef, setEditorState }) => {
                     console.log('New Content -- ', EditorState.push(currentEditorState, newContentState, 'insert-characters'));
 
                     // Update the editor state with the new content state
+                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
                     setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    setShowSuggestions(false);
+
+                    // Move the cursor to the end of the text..
+                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
+                    setEditorState(finalEditorState);
+
                 } else {
                     // If there is no closing '}' character, simply insert the selected suggestion at the cursor position
                     const newContentState = Modifier.insertText(contentState, selection, suggestion);
+                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
                     setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    setShowSuggestions(false);
+
+
+                    // Move the cursor to the end of the text..
+                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
                 }
             }
         },
         [editorRef, setEditorState]
     );
 
+
+    /**
+     * ==== Handle the search of suggestion list ====
+     * @param {*} event 
+     */
+    const handleSearchChange = (event) => {
+        const { value } = event.target;
+        const filteredSpinTaxData = spinTaxData.filter(spin => spin.toLowerCase() === value.toLowerCase());
+        setSpinTaxData(filteredSpinTaxData);
+    };
+
+    console.log(spinTaxData);
 
 
     return (
@@ -66,11 +92,12 @@ const SuggestionList = ({ positions, spinTax, editorRef, setEditorState }) => {
                     type="text"
                     placeholder="Search"
                     className="suggestion-search"
+                    onChange={handleSearchChange}
                 />
 
                 <div className="suggestion-scroll-list">
                     <ul>
-                        {spinTax.length && spinTax.map((spin, index) => (
+                        {spinTaxData.length && spinTaxData.map((spin, index) => (
                             <li key={index} onClick={() => handleSuggestionSelect(spin)}>{spin}</li>
                         ))}
                     </ul>
