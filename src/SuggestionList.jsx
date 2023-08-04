@@ -21,7 +21,6 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
 
             // Find the index of the opening '{' character in the current line
             const openingBraceIndex = currentText.lastIndexOf('{', currentOffset);
-            
 
             if (openingBraceIndex !== -1) {
                 // Find the index of the closing '}' character after the opening '{' character

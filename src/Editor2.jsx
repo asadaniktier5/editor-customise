@@ -116,8 +116,56 @@ const EditorComponent = () => {
       const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
       setEditorState(newEditorState);
     }
+
+    // Check if the current charecter is two opening curly bracs '{{'..
+    if (currentText.slice(currentOffset - 2, currentOffset) === '{{') {
+      setShowMergeSuggestions(true);
+
+    } else if (currentChar === '[') {
+      setShowMergeSuggestions(false);
+      setShowSegmentSuggestions(true);
+
+    } else {
+      setShowMergeSuggestions(false);
+      setShowSegmentSuggestions(false);
+    }
+
+    // Check if the current character is an opening '{{' and if the suggestion list is shown
+    if (currentChar === '{{' && showMergeSugggestions) {
+      // Automatically add '}' after inserting suggestion
+      const newContentState = state.getCurrentContent();
+      const newSelection = selection.merge({
+        anchorOffset: currentOffset + 1,
+        focusOffset: currentOffset + 1,
+      });
+      const newContentStateWithClosingBracket = Modifier.insertText(
+        newContentState,
+        newSelection,
+        '}}'
+      );
+      const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
+      setEditorState(newEditorState);
+    }
+
+    // Check if the current character is an opening '[' and if the suggestion list is shown
+    if (currentChar === '[' && showMergeSugggestions) {
+      // Automatically add '}' after inserting suggestion
+      const newContentState = state.getCurrentContent();
+      const newSelection = selection.merge({
+        anchorOffset: currentOffset + 1,
+        focusOffset: currentOffset + 1,
+      });
+      const newContentStateWithClosingBracket = Modifier.insertText(
+        newContentState,
+        newSelection,
+        ']'
+      );
+      const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
+      setEditorState(newEditorState);
+    }
   };
 
+  
 
   /**
    * ==== Handle Before Input ====
