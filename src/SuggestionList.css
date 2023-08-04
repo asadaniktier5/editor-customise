@@ -1,28 +1,38 @@
 .suggestion-list {
     position: absolute;
-    width: 150px;
-    height: 150px;
+    /* height: 150px; */
     font-size: 10px;
     padding: 5px 10px 5px 10px;
-    background: darkslategray;
+    background: #313037;
     border-radius: 5px;
     color: lightgray;
     z-index: 999;
+    overflow: hidden;
 }
 
 .suggestion-search {
+    width: 200px;
+    background: #313035;
+    border: 1px solid rgb(74, 74, 74);
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-flex;   
+}
+
+.suggestion-searchbar {
     width: 100%;
-    border-radius: 3px;
-    outline: none;
-    background: black;
+    background: none;
     border: none;
-    border: 1px solid black;
-    color: white;
+    outline: none;
     font-size: 15px;
+    color: white;
+    padding-left: 0.4rem;
 }
 
 .suggestion-scroll-list {
-    overflow: scroll;    
+    overflow: scroll;
+    max-height: 120px;
+    scroll-behavior: smooth;
 }
 
 .suggestion-scroll-list ul {

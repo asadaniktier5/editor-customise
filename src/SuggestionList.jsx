@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'; // Import useCallback hook
 import { EditorState, Modifier } from 'draft-js'; // Import EditorState and Modifier
 import "./SuggestionList.css";
+import SearchIcon from './assets/search';
 
-const SuggestionList = ({ positions, spinTax, editorRef, setEditorState, setShowSuggestions }) => {
-    const [spinTaxData, setSpinTaxData] = useState([...spinTax]);
+const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, setShowSuggestions }) => {
+    const [spinTaxData, setSpinTaxData] = useState([...suggestions]);
 
     /**
      * ---- Handle Suggestion Select ----
@@ -20,6 +21,7 @@ const SuggestionList = ({ positions, spinTax, editorRef, setEditorState, setShow
 
             // Find the index of the opening '{' character in the current line
             const openingBraceIndex = currentText.lastIndexOf('{', currentOffset);
+            
 
             if (openingBraceIndex !== -1) {
                 // Find the index of the closing '}' character after the opening '{' character
@@ -88,12 +90,16 @@ const SuggestionList = ({ positions, spinTax, editorRef, setEditorState, setShow
                 left: positions?.left,
                 top: positions?.top,
             }}>
-                <input
-                    type="text"
-                    placeholder="Search"
-                    className="suggestion-search"
-                    onChange={handleSearchChange}
-                />
+
+                <div className='suggestion-search'>
+                    <SearchIcon width={18} height={18} />
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        className="suggestion-searchbar"
+                        onChange={handleSearchChange}
+                    />
+                </div>
 
                 <div className="suggestion-scroll-list">
                     <ul>

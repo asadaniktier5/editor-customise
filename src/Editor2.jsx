@@ -4,19 +4,26 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './customStyle.css';
 import SuggestionList from './SuggestionList';
+import emogiIcon from './assets/emogi.svg';
+import undoIcon from './assets/undo.svg';
+import redoicon from './assets/redo.svg';
+import lineIcon from './assets/line.svg';
 import boldIcon from './assets/bold.svg';
 import italicIcon from './assets/italic.svg';
 import underlineIcon from './assets/underline.svg';
 
 
 // .. Editor Suggestions List..
-const spinTax = ['Hi', 'Hello', 'Dear', 'Hey'];
+const spinTax = ['Hi', 'Hello', 'Dear', 'Hey', 'Greetings', 'Welcome'];
+const mergeField = ['name', 'age', 'country', 'tier', 'status'];
+const segment = ['Regards', 'Sincerely', 'Faithfully'];
 
 
 const EditorComponent = () => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [showMergeSugggetions, setShowMergeSuggestions] = useState(false);
+  const [showMergeSugggestions, setShowMergeSuggestions] = useState(false);
+  const [showSegmentSuggestions, setShowSegmentSuggestions] = useState(false);
   const [suggestionPosition, setSuggestionPosition] = useState({ left: 0, top: 0 });
   const editorRef = useRef(null);
 
@@ -25,15 +32,18 @@ const EditorComponent = () => {
    * ==== The Toolbar Options ====
    */
   const toolbarOptions = {
-    options: ['emoji', 'inline', 'history'],
+    options: ['emoji', 'history', 'inline',],
+    emoji: { icon: emogiIcon, className: undefined },
+    history: {
+      options: ['undo', 'redo'],
+      undo: { icon: undoIcon, className: undefined },
+      redo: { icon: redoicon, className: undefined },
+    },
     inline: {
       options: ['bold', 'italic', 'underline'],
       bold: { icon: boldIcon, className: undefined },
       italic: { icon: italicIcon, className: undefined },
       underline: { icon: underlineIcon, className: undefined },
-    },
-    history: {
-      options: ['undo', 'redo'],
     },
   };
 
@@ -66,16 +76,16 @@ const EditorComponent = () => {
           .querySelector(`[data-offset-key="${currentBlock.getKey()}-0-0"]`)
           .getBoundingClientRect();
 
-        const lineHeight = window.getComputedStyle(
-          editorRef.querySelector('.public-DraftEditor-content')
-        ).lineHeight;
+        const lineHeight = window.getComputedStyle(editorRef.querySelector('.public-DraftEditor-content')).lineHeight;
         const lineHeightValue = parseFloat(lineHeight);
 
         const lines = currentText.split('\n');
-        const currentLineIndex = lines.findIndex(
-          (line) => line === currentText.substring(0, currentOffset)
-        );
+        const currentLineIndex = lines.findIndex((line) => line === currentText.substring(0, currentOffset));
         const cursorLineTop = editorRect.top + lineHeightValue * currentLineIndex - editorRef.querySelector('.public-DraftEditor-content').scrollTop;
+
+        console.log("CursorLineTop -- ", cursorLineTop);
+        console.log("Lines -- ", lines);
+        console.log("CurrentLineIndex -- ", currentLineIndex);
 
         setSuggestionPosition({
           left: left - editorRect.left + cursorPosition * 7, // Adjust the value (7) based on your layout
@@ -137,16 +147,13 @@ const EditorComponent = () => {
       return 'not-handled';
     }
 
-    if (chars === '|') {
-      // Show the suggestion list again
-      setShowSuggestions(true);
+    // if (chars === '|') {
+    //   // Move the cursor to the end of the text
+    //   const newEditorState = EditorState.moveFocusToEnd(editorState);
+    //   setEditorState(newEditorState);
 
-      // Move the cursor to the end of the text
-      const newEditorState = EditorState.moveFocusToEnd(editorState);
-      setEditorState(newEditorState);
-
-      return 'handled';
-    }
+    //   return 'not-handled';
+    // }
   };
 
 
@@ -174,6 +181,29 @@ const EditorComponent = () => {
       />
       {showSuggestions && (
         <SuggestionList
+          suggestions={spinTax}
+          positions={{ left: suggestionPosition.left, top: suggestionPosition.top }}
+          spinTax={spinTax}
+          editorRef={editorRef}
+          setEditorState={setEditorState}
+          setShowSuggestions={setShowSuggestions}
+        />
+      )}
+
+      {showMergeSugggestions && (
+        <SuggestionList
+          suggestions={mergeField}
+          positions={{ left: suggestionPosition.left, top: suggestionPosition.top }}
+          spinTax={spinTax}
+          editorRef={editorRef}
+          setEditorState={setEditorState}
+          setShowSuggestions={setShowSuggestions}
+        />
+      )}
+
+      {showSegmentSuggestions && (
+        <SuggestionList
+          suggestions={segment}
           positions={{ left: suggestionPosition.left, top: suggestionPosition.top }}
           spinTax={spinTax}
           editorRef={editorRef}

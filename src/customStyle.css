@@ -10,8 +10,17 @@
 
 
 .editor-wrapper {
-  border: 1px solid #ccc;
+  border: 1px solid #313037;
   /* padding: 10px; */
+  /* height: 500px; */
+  width: 800px;
+  border: none;
+  border-radius: 5px;
+}
+
+.editor-wrapper:focus-within {
+  border: none;
+  border: 1px solid #0094FF;
 }
 
 .editor-main {
@@ -20,13 +29,15 @@
   border: 1px solid #000;
   background-color: #000;
   color: white;
+  border-radius: 0px 0px 5px 5px;
 }
 
 .editor-toolbar {
-  border: 1px solid gray;
+  border: none;
   /* background-color: #313037; */
-  background-color: lightgray;
-  padding: 5px;
+  background-color: #313037;
+  /* padding: 5px; */
+  border-radius: 5px 5px 0px 0px;
 }
 
 .rdw-editor-toolbar {
@@ -36,4 +47,14 @@
 .rdw-option-wrapper {
   border: none;
   background: none;
+}
+
+
+/****
+  ======== ToolBar Icons ========
+****/
+.rdw-option-wrapper:hover {
+  box-shadow: none;
+  background-color: #000;
+  border-radius: 5px;
 }
