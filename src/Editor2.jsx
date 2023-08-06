@@ -6,8 +6,7 @@ import './customStyle.css';
 import SuggestionList from './SuggestionList';
 import emogiIcon from './assets/emogi.svg';
 import undoIcon from './assets/undo.svg';
-import redoicon from './assets/redo.svg';
-import lineIcon from './assets/line.svg';
+import redoIcon from './assets/redo.svg';
 import boldIcon from './assets/bold.svg';
 import italicIcon from './assets/italic.svg';
 import underlineIcon from './assets/underline.svg';
@@ -32,12 +31,12 @@ const EditorComponent = () => {
    * ==== The Toolbar Options ====
    */
   const toolbarOptions = {
-    options: ['emoji', 'history', 'inline',],
+    options: ['emoji', 'history', 'inline'],
     emoji: { icon: emogiIcon, className: undefined },
     history: {
       options: ['undo', 'redo'],
       undo: { icon: undoIcon, className: undefined },
-      redo: { icon: redoicon, className: undefined },
+      redo: { icon: redoIcon, className: undefined },
     },
     inline: {
       options: ['bold', 'italic', 'underline'],
@@ -165,7 +164,7 @@ const EditorComponent = () => {
     }
   };
 
-  
+
 
   /**
    * ==== Handle Before Input ====
@@ -175,7 +174,7 @@ const EditorComponent = () => {
    */
   const handleBeforeInput = (chars, editorState) => {
     // Check if the user typed '{'
-    if (chars === '{') {
+    if (chars === '{' || chars === '{{' || chars === '[') {
       const cursorPosition = editorState.getSelection().getAnchorOffset();
       const editorRect = editorRef.current.getWrapperRef().getBoundingClientRect();
 
@@ -231,7 +230,6 @@ const EditorComponent = () => {
         <SuggestionList
           suggestions={spinTax}
           positions={{ left: suggestionPosition.left, top: suggestionPosition.top }}
-          spinTax={spinTax}
           editorRef={editorRef}
           setEditorState={setEditorState}
           setShowSuggestions={setShowSuggestions}
@@ -242,10 +240,9 @@ const EditorComponent = () => {
         <SuggestionList
           suggestions={mergeField}
           positions={{ left: suggestionPosition.left, top: suggestionPosition.top }}
-          spinTax={spinTax}
           editorRef={editorRef}
           setEditorState={setEditorState}
-          setShowSuggestions={setShowSuggestions}
+          setShowSuggestions={setShowMergeSuggestions}
         />
       )}
 
@@ -253,10 +250,9 @@ const EditorComponent = () => {
         <SuggestionList
           suggestions={segment}
           positions={{ left: suggestionPosition.left, top: suggestionPosition.top }}
-          spinTax={spinTax}
           editorRef={editorRef}
           setEditorState={setEditorState}
-          setShowSuggestions={setShowSuggestions}
+          setShowSuggestions={setShowSegmentSuggestions}
         />
       )}
 
