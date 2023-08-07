@@ -147,7 +147,7 @@ const EditorComponent = () => {
     }
 
     // Check if the current character is an opening '[' and if the suggestion list is shown
-    if (currentChar === '[' && showMergeSugggestions) {
+    if (currentChar === '[' && showSegmentSuggestions) {
       // Automatically add '}' after inserting suggestion
       const newContentState = state.getCurrentContent();
       const newSelection = selection.merge({
