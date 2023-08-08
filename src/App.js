@@ -1,10 +1,10 @@
-import Editor2 from './Editor2';
+import Editor from './Editor';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Editor2 />
+        <Editor />
       </header>
     </div>
   );

@@ -26,6 +26,7 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
             const openingAngleBraceIndex = currentText.lastIndexOf('[', currentOffset);
             let closingBrace = null;
 
+            
             if (openingBraceIndex !== -1) {
                 closingBrace = '}';
                 // Find the index of the closing '}' character after the opening '{' character.
@@ -41,12 +42,14 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                         contentState,
                         selection.merge({
                             anchorOffset: openingBraceIndex,
-                            focusOffset: closingBraceIndex + 1, // Include the length of the selected suggestion
+                            focusOffset: closingBraceIndex + closingBrace.length + suggestion.length,
                         }),
                         newText
                     );
 
                     console.log("New Text -- ", newText);
+                    console.log("making starting { : ", currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1));
+                    console.log("ending with } : ", currentText.substring(closingBraceIndex));
 
                     // Update the editor state with the new content state
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
@@ -58,13 +61,13 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                     setEditorState(finalEditorState);
 
                 } else {
-                    // If there is no closing brace, simply insert the selected suggestion at the cursor position
+                    // If there is no closing '}' character, simply insert the selected suggestion at the cursor position
                     const newContentState = Modifier.insertText(contentState, selection, suggestion);
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
-                    setEditorState(newEditorState);
+                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
                     setShowSuggestions(false);
 
-                    // Move the cursor to the end of the text
+                    // Move the cursor to the end of the text..
                     const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
                     setEditorState(finalEditorState);
                 }
@@ -90,7 +93,9 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                         newText
                     );
 
-                    console.log('New Content -- ', EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    console.log("New Text -- ", newText);
+                    console.log("making starting [ : ", currentText.substring(openingAngleBraceIndex + 1, closingAngelBraceIndex - 1));
+                    console.log("ending with ] : ", currentText.substring(closingAngelBraceIndex));
 
                     // Update the editor state with the new content state
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
@@ -102,7 +107,7 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                     setEditorState(finalEditorState);
 
                 } else {
-                    // If there is no closing '}' character, simply insert the selected suggestion at the cursor position
+                    // If there is no closing ']' character, simply insert the selected suggestion at the cursor position
                     const newContentState = Modifier.insertText(contentState, selection, suggestion);
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
                     setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
@@ -134,7 +139,9 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                         newText
                     );
 
-                    console.log('New Content -- ', EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    console.log("New Text -- ", newText);
+                    console.log("making starting {{ : ", currentText.substring(openingDoubleBraceIndex + 1, closingDoubleBraceIndex - 1));
+                    console.log("ending with }} : ", currentText.substring(closingDoubleBraceIndex));
 
                     // Update the editor state with the new content state
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
@@ -146,23 +153,22 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                     setEditorState(finalEditorState);
 
                 } else {
-                    // If there is no closing brace, simply insert the selected suggestion at the cursor position
+                    // If there is no closing '}}' character, simply insert the selected suggestion at the cursor position
                     const newContentState = Modifier.insertText(contentState, selection, suggestion);
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
-                    setEditorState(newEditorState);
+                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
                     setShowSuggestions(false);
 
-                    // Move the cursor to the end of the text
+                    // Move the cursor to the end of the text..
                     const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
                     setEditorState(finalEditorState);
                 }
             }
+
         },
         [editorRef, setEditorState]
     );
-
-
-
+    
 
 
     /**
@@ -174,8 +180,6 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
         const filteredSpinTaxData = spinTaxData.filter(spin => spin.toLowerCase() === value.toLowerCase());
         setSpinTaxData(filteredSpinTaxData);
     };
-
-    console.log(spinTaxData);
 
 
     return (

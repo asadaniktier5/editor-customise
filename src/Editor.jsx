@@ -62,35 +62,36 @@ const EditorComponent = () => {
     // Check if the current character is an opening '{'
     if (currentChar === '{') {
       setShowSuggestions(true);
-      const editorRef = document.querySelector('.rdw-editor-main');
-      const suggestionListRef = document.querySelector('.suggestion-list');
 
-      if (editorRef && suggestionListRef) {
-        const editorRect = editorRef.getBoundingClientRect();
-        const suggestionRect = suggestionListRef.getBoundingClientRect();
+      // const editorRef = document.querySelector('.rdw-editor-main');
+      // const suggestionListRef = document.querySelector('.suggestion-list');
 
-        const cursorPosition = state.getSelection().getAnchorOffset();
-        const { left, top } = editorRef
-          .querySelector('.public-DraftEditor-content')
-          .querySelector(`[data-offset-key="${currentBlock.getKey()}-0-0"]`)
-          .getBoundingClientRect();
+      // if (editorRef && suggestionListRef) {
+      //   const editorRect = editorRef.getBoundingClientRect();
+      //   const suggestionRect = suggestionListRef.getBoundingClientRect();
 
-        const lineHeight = window.getComputedStyle(editorRef.querySelector('.public-DraftEditor-content')).lineHeight;
-        const lineHeightValue = parseFloat(lineHeight);
+      //   const cursorPosition = state.getSelection().getAnchorOffset();
+      //   const { left, top } = editorRef
+      //     .querySelector('.public-DraftEditor-content')
+      //     .querySelector(`[data-offset-key="${currentBlock.getKey()}-0-0"]`)
+      //     .getBoundingClientRect();
 
-        const lines = currentText.split('\n');
-        const currentLineIndex = lines.findIndex((line) => line === currentText.substring(0, currentOffset));
-        const cursorLineTop = editorRect.top + lineHeightValue * currentLineIndex - editorRef.querySelector('.public-DraftEditor-content').scrollTop;
+      //   const lineHeight = window.getComputedStyle(editorRef.querySelector('.public-DraftEditor-content')).lineHeight;
+      //   const lineHeightValue = parseFloat(lineHeight);
 
-        console.log("CursorLineTop -- ", cursorLineTop);
-        console.log("Lines -- ", lines);
-        console.log("CurrentLineIndex -- ", currentLineIndex);
+      //   const lines = currentText.split('\n');
+      //   const currentLineIndex = lines.findIndex((line) => line === currentText.substring(0, currentOffset));
+      //   const cursorLineTop = editorRect.top + lineHeightValue * currentLineIndex - editorRef.querySelector('.public-DraftEditor-content').scrollTop;
 
-        setSuggestionPosition({
-          left: left - editorRect.left + cursorPosition * 7, // Adjust the value (7) based on your layout
-          top: cursorLineTop + lineHeightValue, // Adjust the value based on your layout
-        });
-      }
+      //   console.log("CursorLineTop -- ", cursorLineTop);
+      //   console.log("Lines -- ", lines);
+      //   console.log("CurrentLineIndex -- ", currentLineIndex);
+
+      //   setSuggestionPosition({
+      //     left: left - editorRect.left + cursorPosition * 7, // Adjust the value (7) based on your layout
+      //     top: cursorLineTop + lineHeightValue, // Adjust the value based on your layout
+      //   });
+      // }
 
     } else {
       setShowSuggestions(false);
@@ -107,20 +108,25 @@ const EditorComponent = () => {
         anchorOffset: currentOffset + 1,
         focusOffset: currentOffset + 1,
       });
+
       const newContentStateWithClosingBracket = Modifier.insertText(
         newContentState,
         newSelection,
         '}'
       );
+
       const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
       setEditorState(newEditorState);
     }
 
     // Check if the current charecter is two opening curly bracs '{{'..
     if (currentText.slice(currentOffset - 2, currentOffset) === '{{') {
+      setShowSuggestions(false);
+      setShowSegmentSuggestions(false);
       setShowMergeSuggestions(true);
 
     } else if (currentChar === '[') {
+      setShowSuggestions(false);
       setShowMergeSuggestions(false);
       setShowSegmentSuggestions(true);
 
@@ -136,12 +142,15 @@ const EditorComponent = () => {
       const newSelection = selection.merge({
         anchorOffset: currentOffset + 1,
         focusOffset: currentOffset + 1,
+
       });
+
       const newContentStateWithClosingBracket = Modifier.insertText(
         newContentState,
         newSelection,
         '}}'
       );
+
       const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
       setEditorState(newEditorState);
     }
@@ -154,11 +163,13 @@ const EditorComponent = () => {
         anchorOffset: currentOffset + 1,
         focusOffset: currentOffset + 1,
       });
+
       const newContentStateWithClosingBracket = Modifier.insertText(
         newContentState,
         newSelection,
         ']'
       );
+
       const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
       setEditorState(newEditorState);
     }
