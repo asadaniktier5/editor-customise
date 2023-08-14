@@ -21,8 +21,7 @@ const segment = ['Regards', 'Sincerely', 'Faithfully'];
 
 // .. Plugin of Emoji..
 const emojiPlugin = createEmojiPlugin();
-const { EmojiSelect } = emojiPlugin;
-const plugins = [emojiPlugin];
+const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
 
 
 const EditorComponent = () => {
@@ -107,6 +106,23 @@ const EditorComponent = () => {
     // Update the editor state
     setEditorState(state);
 
+    // Check if the current charecter is two opening curly bracs '{{'..
+    if (currentText.slice(currentOffset - 2, currentOffset) === '{{') {
+      setShowSuggestions(false);
+      setShowSegmentSuggestions(false);
+      setShowMergeSuggestions(true);
+
+    } else if (currentChar === '[') {
+      setShowSuggestions(false);
+      setShowMergeSuggestions(false);
+      setShowSegmentSuggestions(true);
+
+    } else {
+      setShowMergeSuggestions(false);
+      setShowSegmentSuggestions(false);
+    }
+
+    
     // Check if the current character is an opening '{' and if the suggestion list is shown
     if (currentChar === '{' && showSuggestions) {
       // Automatically add '}' after inserting suggestion
@@ -124,22 +140,6 @@ const EditorComponent = () => {
 
       const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
       setEditorState(newEditorState);
-    }
-
-    // Check if the current charecter is two opening curly bracs '{{'..
-    if (currentText.slice(currentOffset - 2, currentOffset) === '{{') {
-      setShowSuggestions(false);
-      setShowSegmentSuggestions(false);
-      setShowMergeSuggestions(true);
-
-    } else if (currentChar === '[') {
-      setShowSuggestions(false);
-      setShowMergeSuggestions(false);
-      setShowSegmentSuggestions(true);
-
-    } else {
-      setShowMergeSuggestions(false);
-      setShowSegmentSuggestions(false);
     }
 
     // Check if the current character is an opening '{{' and if the suggestion list is shown
@@ -240,14 +240,14 @@ const EditorComponent = () => {
         onEditorStateChange={handleEditorChange}
         handleBeforeInput={handleBeforeInput}
         toolbar={toolbarOptions}
-        plugins={plugins}
+        plugins={[emojiPlugin]}
         // plugins={[emojiPlugin]}
         wrapperClassName="editor-wrapper"
         editorClassName="editor-main"
         toolbarClassName="editor-toolbar"
       />
 
-      {/* <EmojiSuggestions /> */}
+      <EmojiSuggestions />
 
       {showSuggestions && (
         <SuggestionList

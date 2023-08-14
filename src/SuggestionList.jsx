@@ -26,6 +26,9 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
             const openingAngleBraceIndex = currentText.lastIndexOf('[', currentOffset);
             let closingBrace = null;
 
+            const stickIndex = currentText.lastIndexOf('|', currentOffset);
+
+            console.log(`{ = ${openingBraceIndex}, [ = ${openingAngleBraceIndex}`);
             
             if (openingBraceIndex !== -1) {
                 closingBrace = '}';
@@ -46,7 +49,7 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                         }),
                         newText
                     );
-
+                        
                     console.log("New Text -- ", newText);
                     console.log("making starting { : ", currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1));
                     console.log("ending with } : ", currentText.substring(closingBraceIndex));
