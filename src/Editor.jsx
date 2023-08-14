@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { EditorState, convertToRaw, Modifier } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import './customStyle.css';
+import { EditorState, convertToRaw, Modifier } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import createEmojiPlugin from 'draft-js-emoji-plugin';
 import SuggestionList from './SuggestionList';
 import emogiIcon from './assets/emogi.svg';
 import undoIcon from './assets/undo.svg';
@@ -16,6 +17,12 @@ import underlineIcon from './assets/underline.svg';
 const spinTax = ['Hi', 'Hello', 'Dear', 'Hey', 'Greetings', 'Welcome'];
 const mergeField = ['name', 'age', 'country', 'tier', 'status'];
 const segment = ['Regards', 'Sincerely', 'Faithfully'];
+
+
+// .. Plugin of Emoji..
+const emojiPlugin = createEmojiPlugin();
+const { EmojiSelect } = emojiPlugin;
+const plugins = [emojiPlugin];
 
 
 const EditorComponent = () => {
@@ -32,9 +39,9 @@ const EditorComponent = () => {
    */
   const toolbarOptions = {
     options: ['emoji', 'history', 'inline'],
-    emoji: { icon: emogiIcon, className: undefined },
+    emoji: { icon: emogiIcon, className: undefined, component: EmojiSelect },
     history: {
-      options: ['undo', 'redo'],
+      options: ['undo', 'redo', 'separator'],
       undo: { icon: undoIcon, className: undefined },
       redo: { icon: redoIcon, className: undefined },
     },
@@ -233,10 +240,15 @@ const EditorComponent = () => {
         onEditorStateChange={handleEditorChange}
         handleBeforeInput={handleBeforeInput}
         toolbar={toolbarOptions}
+        plugins={plugins}
+        // plugins={[emojiPlugin]}
         wrapperClassName="editor-wrapper"
         editorClassName="editor-main"
         toolbarClassName="editor-toolbar"
       />
+
+      {/* <EmojiSuggestions /> */}
+
       {showSuggestions && (
         <SuggestionList
           suggestions={spinTax}

@@ -177,7 +177,7 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
      */
     const handleSearchChange = (event) => {
         const { value } = event.target;
-        const filteredSpinTaxData = spinTaxData.filter(spin => spin.toLowerCase() === value.toLowerCase());
+        const filteredSpinTaxData = suggestions.filter(data => data.toLowerCase().indexOf(value.toLowerCase()) > -1);
         setSpinTaxData(filteredSpinTaxData);
     };
 
