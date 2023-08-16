@@ -50,11 +50,31 @@
 }
 
 
+/* 
+  ====== Emoji Suggesiton List Styles ======
+*/
+.draftJsEmojiPlugin__emojiSelectPopover__1J1s0 {
+  background-color: #000 !important;
+  box-shadow: 0 5px 10px 0 #313037 !important;
+  /* border: none !important; */
+  border-color: #313037 !important;
+  border-radius: 5px !important;
+}
+
+
 /****
   ======== ToolBar Icons ========
 ****/
-.rdw-option-wrapper:hover {
+.rdw-option-wrapper:hover,
+.draftJsEmojiPlugin__emojiSelectButton__3sPol:hover,
+.draftJsEmojiPlugin__emojiSelectButtonPressed__2Tezu:hover {
   box-shadow: none;
-  background-color: #000;
-  border-radius: 5px;
+  background: #000 !important;
+  border-radius: 5px !important;
+}
+
+.draftJsEmojiPlugin__emojiSelectButton__3sPol,
+.draftJsEmojiPlugin__emojiSelectButtonPressed__2Tezu {
+  background: none !important;
+  border: none !important;
 }

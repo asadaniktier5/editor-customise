@@ -38,7 +38,7 @@ const EditorComponent = () => {
    */
   const toolbarOptions = {
     options: ['emoji', 'history', 'inline'],
-    emoji: { icon: emogiIcon, className: undefined, component: EmojiSelect },
+    emoji: { icon: emogiIcon, className: 'emoji-icon', component: EmojiSelect },
     history: {
       options: ['undo', 'redo', 'separator'],
       undo: { icon: undoIcon, className: undefined },
