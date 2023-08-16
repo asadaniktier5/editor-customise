@@ -142,6 +142,21 @@ const EditorComponent = () => {
       setEditorState(newEditorState);
     }
 
+    // Check is the current character is with '|'..
+    if (currentChar === '|') {
+      setShowSuggestions(true);
+      
+        const newContentState = state.getCurrentContent();
+        const newSelection = selection.merge({
+          anchorOffset: currentOffset,
+          focusOffset: currentOffset,
+        });
+
+        const newContentStateWithIndex = Modifier.insertText(newContentState, newSelection);
+        const newEditorState = EditorState.push(state, newContentStateWithIndex, 'insert-characters');
+        setEditorState(newEditorState);
+    }
+
     // Check if the current character is an opening '{{' and if the suggestion list is shown
     if (currentChar === '{{' && showMergeSugggestions) {
       // Automatically add '}' after inserting suggestion

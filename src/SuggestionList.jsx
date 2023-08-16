@@ -37,8 +37,15 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
 
                 if (closingBraceIndex !== -1) {
                     // Replace the text inside the curly brackets with the selected suggestion
-                    const newText = currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1) + suggestion + currentText.substring(closingBraceIndex);
+                    let newText = currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1) + suggestion + currentText.substring(closingBraceIndex);
                     // const newText2 = currentText.substring(openingBraceIndex + closingBrace.length, closingBraceIndex) + suggestion + currentText.substring(closingBraceIndex + closingBrace.length);
+
+                    // When you needs make separated '|' with many Sugestion..
+                    if (stickIndex !== -1) {
+                        newText = currentText.substring(openingBraceIndex, closingBraceIndex - 1) + '|' + suggestion + currentText.substring(closingBraceIndex);
+                        console.log("With Stick Next Text -- ", newText);
+                        console.log("Suggestion -- ", suggestion);
+                    }
 
                     // Create a new content state with the updated text
                     const newContentState = Modifier.replaceText(
