@@ -122,7 +122,7 @@ const EditorComponent = () => {
       setShowSegmentSuggestions(false);
     }
 
-    
+
     // Check if the current character is an opening '{' and if the suggestion list is shown
     if (currentChar === '{' && showSuggestions) {
       // Automatically add '}' after inserting suggestion
@@ -145,16 +145,16 @@ const EditorComponent = () => {
     // Check is the current character is with '|'..
     if (currentChar === '|') {
       setShowSuggestions(true);
-      
-        const newContentState = state.getCurrentContent();
-        const newSelection = selection.merge({
-          anchorOffset: currentOffset,
-          focusOffset: currentOffset,
-        });
 
-        const newContentStateWithIndex = Modifier.insertText(newContentState, newSelection);
-        const newEditorState = EditorState.push(state, newContentStateWithIndex, 'insert-characters');
-        setEditorState(newEditorState);
+      const newContentState = state.getCurrentContent();
+      const newSelection = selection.merge({
+        anchorOffset: currentOffset,
+        focusOffset: currentOffset,
+      });
+
+      const newContentStateWithIndex = Modifier.insertText(newContentState, newSelection);
+      const newEditorState = EditorState.push(state, newContentStateWithIndex, 'insert-characters');
+      setEditorState(newEditorState);
     }
 
     // Check if the current character is an opening '{{' and if the suggestion list is shown
@@ -256,7 +256,6 @@ const EditorComponent = () => {
         handleBeforeInput={handleBeforeInput}
         toolbar={toolbarOptions}
         plugins={[emojiPlugin]}
-        // plugins={[emojiPlugin]}
         wrapperClassName="editor-wrapper"
         editorClassName="editor-main"
         toolbarClassName="editor-toolbar"

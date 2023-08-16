@@ -19,6 +19,7 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
             const currentBlock = contentState.getBlockForKey(currentBlockKey);
             const currentOffset = selection.getStartOffset();
             const currentText = currentBlock.getText();
+            const currentChar = currentText.charAt(currentOffset - 1);
 
             // Find the index of the opening character in the current line
             const openingBraceIndex = currentText.lastIndexOf('{', currentOffset);
@@ -29,61 +30,11 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
             const stickIndex = currentText.lastIndexOf('|', currentOffset);
 
             console.log(`{ = ${openingBraceIndex}, [ = ${openingAngleBraceIndex}`);
-            
-            if (openingBraceIndex !== -1) {
-                closingBrace = '}';
-                // Find the index of the closing '}' character after the opening '{' character.
-                const closingBraceIndex = currentText.indexOf('}', openingBraceIndex);
 
-                if (closingBraceIndex !== -1) {
-                    // Replace the text inside the curly brackets with the selected suggestion
-                    let newText = currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1) + suggestion + currentText.substring(closingBraceIndex);
-                    // const newText2 = currentText.substring(openingBraceIndex + closingBrace.length, closingBraceIndex) + suggestion + currentText.substring(closingBraceIndex + closingBrace.length);
-
-                    // When you needs make separated '|' with many Sugestion..
-                    if (stickIndex !== -1) {
-                        newText = currentText.substring(openingBraceIndex, closingBraceIndex - 1) + '|' + suggestion + currentText.substring(closingBraceIndex);
-                        console.log("With Stick Next Text -- ", newText);
-                        console.log("Suggestion -- ", suggestion);
-                    }
-
-                    // Create a new content state with the updated text
-                    const newContentState = Modifier.replaceText(
-                        contentState,
-                        selection.merge({
-                            anchorOffset: openingBraceIndex,
-                            focusOffset: closingBraceIndex + closingBrace.length + suggestion.length,
-                        }),
-                        newText
-                    );
-                        
-                    console.log("New Text -- ", newText);
-                    console.log("making starting { : ", currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1));
-                    console.log("ending with } : ", currentText.substring(closingBraceIndex));
-
-                    // Update the editor state with the new content state
-                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
-                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
-                    setShowSuggestions(false);
-
-                    // Move the cursor to the end of the text..
-                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
-                    setEditorState(finalEditorState);
-
-                } else {
-                    // If there is no closing '}' character, simply insert the selected suggestion at the cursor position
-                    const newContentState = Modifier.insertText(contentState, selection, suggestion);
-                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
-                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
-                    setShowSuggestions(false);
-
-                    // Move the cursor to the end of the text..
-                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
-                    setEditorState(finalEditorState);
-                }
-            }
+            console.log(`CurrentChar -->> ${currentChar}`);
 
 
+            // Check to opens the '[]' Segment field..
             if (openingAngleBraceIndex !== -1) {
                 closingBrace = ']';
                 // Find the index of the closing ']' character after the opening '[' character.
@@ -129,7 +80,7 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                 }
             }
 
-
+            // Check to opens the '{{}}' Merge field..
             if (openingDoubleBraceIndex !== -1) {
                 closingBrace = '}}';
                 // Find the index of the closing '}}' character after the opening '{{' character.
@@ -175,10 +126,65 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                 }
             }
 
+
+            // Check to open '{}' Spintax field..
+            if (openingBraceIndex !== -1) {
+                closingBrace = '}';
+                // Find the index of the closing '}' character after the opening '{' character.
+                const closingBraceIndex = currentText.indexOf('}', openingBraceIndex);
+
+                if (closingBraceIndex !== -1) {
+                    // Replace the text inside the curly brackets with the selected suggestion
+                    let newText = currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1) + suggestion + currentText.substring(closingBraceIndex);
+                    // const newText2 = currentText.substring(openingBraceIndex + closingBrace.length, closingBraceIndex) + suggestion + currentText.substring(closingBraceIndex + closingBrace.length);
+
+                    // When you needs make separated '|' with many Sugestion..
+                    if (stickIndex !== -1 && currentChar === '|') {
+                        newText = currentText.substring(openingBraceIndex, closingBraceIndex - 1) + '|' + suggestion + currentText.substring(closingBraceIndex);
+                        console.log("With Stick Next Text -- ", newText);
+                        console.log("Suggestion -- ", suggestion);
+                    }
+
+                    // Create a new content state with the updated text
+                    const newContentState = Modifier.replaceText(
+                        contentState,
+                        selection.merge({
+                            anchorOffset: openingBraceIndex,
+                            focusOffset: closingBraceIndex + closingBrace.length + suggestion.length,
+                        }),
+                        newText
+                    );
+
+                    console.log("New Text -- ", newText);
+                    console.log("making starting { : ", currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1));
+                    console.log("ending with } : ", currentText.substring(closingBraceIndex));
+
+                    // Update the editor state with the new content state
+                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
+                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    setShowSuggestions(false);
+
+                    // Move the cursor to the end of the text..
+                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
+                    setEditorState(finalEditorState);
+
+                } else {
+                    // If there is no closing '}' character, simply insert the selected suggestion at the cursor position
+                    const newContentState = Modifier.insertText(contentState, selection, suggestion);
+                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
+                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    setShowSuggestions(false);
+
+                    // Move the cursor to the end of the text..
+                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
+                    setEditorState(finalEditorState);
+                }
+            }
+
         },
         [editorRef, setEditorState]
     );
-    
+
 
 
     /**
