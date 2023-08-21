@@ -65,43 +65,27 @@ const EditorComponent = () => {
     const currentOffset = selection.getStartOffset();
     const currentChar = currentText.charAt(currentOffset - 1);
 
+
+    //  //  console.log("comming::::::")
+    //   const selection = window.getSelection();
+    //   const range = selection.getRangeAt(0);
+    //   const { top, left, height } = range.getBoundingClientRect();
+
+    //   // Calculate the position of the popup
+    //   const caretPosition = {
+    //     top: top + height,
+    //     left: left + 1,
+    //   };
+
+    //   setSuggestionPosition(caretPosition);
+
+
     // Check if the current character is an opening '{'
-    if (currentChar === '{') {
-      setShowSuggestions(true);
-
-      // const editorRef = document.querySelector('.rdw-editor-main');
-      // const suggestionListRef = document.querySelector('.suggestion-list');
-
-      // if (editorRef && suggestionListRef) {
-      //   const editorRect = editorRef.getBoundingClientRect();
-      //   const suggestionRect = suggestionListRef.getBoundingClientRect();
-
-      //   const cursorPosition = state.getSelection().getAnchorOffset();
-      //   const { left, top } = editorRef
-      //     .querySelector('.public-DraftEditor-content')
-      //     .querySelector(`[data-offset-key="${currentBlock.getKey()}-0-0"]`)
-      //     .getBoundingClientRect();
-
-      //   const lineHeight = window.getComputedStyle(editorRef.querySelector('.public-DraftEditor-content')).lineHeight;
-      //   const lineHeightValue = parseFloat(lineHeight);
-
-      //   const lines = currentText.split('\n');
-      //   const currentLineIndex = lines.findIndex((line) => line === currentText.substring(0, currentOffset));
-      //   const cursorLineTop = editorRect.top + lineHeightValue * currentLineIndex - editorRef.querySelector('.public-DraftEditor-content').scrollTop;
-
-      //   console.log("CursorLineTop -- ", cursorLineTop);
-      //   console.log("Lines -- ", lines);
-      //   console.log("CurrentLineIndex -- ", currentLineIndex);
-
-      //   setSuggestionPosition({
-      //     left: left - editorRect.left + cursorPosition * 7, // Adjust the value (7) based on your layout
-      //     top: cursorLineTop + lineHeightValue, // Adjust the value based on your layout
-      //   });
-      // }
-
-    } else {
-      setShowSuggestions(false);
-    }
+    // if (currentChar === '{') {
+    //   setShowSuggestions(true);
+    // } else {
+    //   setShowSuggestions(false);
+    // }
 
     // Update the editor state
     setEditorState(state);
@@ -117,14 +101,43 @@ const EditorComponent = () => {
       setShowMergeSuggestions(false);
       setShowSegmentSuggestions(true);
 
-    } else {
+    } else if (currentChar === '{') {
+      setShowSuggestions(true);
+      setShowMergeSuggestions(false);
+      setShowSegmentSuggestions(false);
+    }else {
+      setShowSuggestions(false);
       setShowMergeSuggestions(false);
       setShowSegmentSuggestions(false);
     }
 
 
+    console.log(currentChar.length);
+
+
+     // Check if the current character is an opening '{{' and if the suggestion list is shown
+     if (currentChar === '{{' && showMergeSugggestions) {
+      // Automatically add '}' after inserting suggestion
+      const newContentState = state.getCurrentContent();
+      const newSelection = selection.merge({
+        anchorOffset: currentOffset + 1,
+        focusOffset: currentOffset + 1,
+
+      });
+
+      const newContentStateWithClosingBracket = Modifier.insertText(
+        newContentState,
+        newSelection,
+        '}}'
+      );
+
+      const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
+      setEditorState(newEditorState);
+    }
+
     // Check if the current character is an opening '{' and if the suggestion list is shown
     if (currentChar === '{' && showSuggestions) {
+      console.log(currentChar.length);
       // Automatically add '}' after inserting suggestion
       const newContentState = state.getCurrentContent();
       const newSelection = selection.merge({
@@ -154,26 +167,6 @@ const EditorComponent = () => {
 
       const newContentStateWithIndex = Modifier.insertText(newContentState, newSelection);
       const newEditorState = EditorState.push(state, newContentStateWithIndex, 'insert-characters');
-      setEditorState(newEditorState);
-    }
-
-    // Check if the current character is an opening '{{' and if the suggestion list is shown
-    if (currentChar === '{{' && showMergeSugggestions) {
-      // Automatically add '}' after inserting suggestion
-      const newContentState = state.getCurrentContent();
-      const newSelection = selection.merge({
-        anchorOffset: currentOffset + 1,
-        focusOffset: currentOffset + 1,
-
-      });
-
-      const newContentStateWithClosingBracket = Modifier.insertText(
-        newContentState,
-        newSelection,
-        '}}'
-      );
-
-      const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
       setEditorState(newEditorState);
     }
 
@@ -208,22 +201,37 @@ const EditorComponent = () => {
   const handleBeforeInput = (chars, editorState) => {
     // Check if the user typed '{'
     if (chars === '{' || chars === '{{' || chars === '[') {
-      const cursorPosition = editorState.getSelection().getAnchorOffset();
-      const editorRect = editorRef.current.getWrapperRef().getBoundingClientRect();
+      // const cursorPosition = editorState.getSelection().getAnchorOffset();
+      // const editorRect = editorRef.current.getWrapperRef().getBoundingClientRect();
 
-      console.log("(Before Input) Editor Rect -- ", editorRect);
+      // console.log("(Before Input) Editor Rect -- ", editorRect);
 
-      setSuggestionPosition({
-        left: editorRect.left + cursorPosition * 7, // Adjust the value (15) based on your layout
-        // top: editorRect.top + editorRect.height, // Adjust the value based on your layout
-        top: editorRect.height,
-      });
+      // setSuggestionPosition({
+      //   left: editorRect.left + cursorPosition * 7, // Adjust the value (15) based on your layout
+      //   // top: editorRect.top + editorRect.height, // Adjust the value based on your layout
+      //   top: editorRect.height,
+      // });
+
+      //  console.log("comming::::::")
+      const selection = window.getSelection();
+      const range = selection.getRangeAt(0);
+      const { top, left, height } = range.getBoundingClientRect();
+
+      console.log("SELECTING 2 -- ", selection);
+
+      // Calculate the position of the popup
+      const caretPosition = {
+        top: top + height,
+        left: left + 1,
+      };
+
+      setSuggestionPosition(caretPosition);
 
       // Move the cursor to the end of the text
       const newEditorState = EditorState.moveFocusToEnd(editorState);
       setEditorState(newEditorState);
 
-      console.log('Cursor Position:', cursorPosition);
+      // console.log('Cursor Position:', cursorPosition);
       return 'not-handled';
     }
 
