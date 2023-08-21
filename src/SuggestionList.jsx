@@ -29,59 +29,11 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
 
             const stickIndex = currentText.lastIndexOf('|', currentOffset);
 
-            console.log(`{ = ${openingBraceIndex}, [ = ${openingAngleBraceIndex}`);
-
-            console.log(`CurrentChar -->> ${currentChar}`);
-
-
-            // Check to opens the '[]' Segment field..
-            if (openingAngleBraceIndex !== -1) {
-                closingBrace = ']';
-                // Find the index of the closing ']' character after the opening '[' character.
-                const closingAngelBraceIndex = currentText.indexOf(']', openingAngleBraceIndex);
-
-                if (closingAngelBraceIndex !== -1) {
-                    // Replace the text inside the curly brackets with the selected suggestion
-                    const newText = currentText.substring(openingAngleBraceIndex + 1, closingAngelBraceIndex - 1) + suggestion + currentText.substring(closingAngelBraceIndex);
-
-                    // Create a new content state with the updated text
-                    const newContentState = Modifier.replaceText(
-                        contentState,
-                        selection.merge({
-                            anchorOffset: openingAngleBraceIndex,
-                            focusOffset: closingAngelBraceIndex + closingBrace.length + suggestion.length,
-                        }),
-                        newText
-                    );
-
-                    console.log("New Text -- ", newText);
-                    console.log("making starting [ : ", currentText.substring(openingAngleBraceIndex + 1, closingAngelBraceIndex - 1));
-                    console.log("ending with ] : ", currentText.substring(closingAngelBraceIndex));
-
-                    // Update the editor state with the new content state
-                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
-                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
-                    setShowSuggestions(false);
-
-                    // Move the cursor to the end of the text..
-                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
-                    setEditorState(finalEditorState);
-
-                } else {
-                    // If there is no closing ']' character, simply insert the selected suggestion at the cursor position
-                    const newContentState = Modifier.insertText(contentState, selection, suggestion);
-                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
-                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
-                    setShowSuggestions(false);
-
-                    // Move the cursor to the end of the text..
-                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
-                    setEditorState(finalEditorState);
-                }
-            }
-
             // Check to opens the '{{}}' Merge field..
             if (openingDoubleBraceIndex !== -1) {
+
+                console.log("====== {{}} =====");
+
                 closingBrace = '}}';
                 // Find the index of the closing '}}' character after the opening '{{' character.
                 const closingDoubleBraceIndex = currentText.indexOf('}}', openingDoubleBraceIndex);
@@ -129,6 +81,9 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
 
             // Check to open '{}' Spintax field..
             if (openingBraceIndex !== -1) {
+
+                console.log("====== {} =====");
+
                 closingBrace = '}';
                 // Find the index of the closing '}' character after the opening '{' character.
                 const closingBraceIndex = currentText.indexOf('}', openingBraceIndex);
@@ -155,9 +110,9 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
                         newText
                     );
 
-                    console.log("New Text -- ", newText);
-                    console.log("making starting { : ", currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1));
-                    console.log("ending with } : ", currentText.substring(closingBraceIndex));
+                    // console.log("New Text -- ", newText);
+                    // console.log("making starting { : ", currentText.substring(openingBraceIndex + 1, closingBraceIndex - 1));
+                    // console.log("ending with } : ", currentText.substring(closingBraceIndex));
 
                     // Update the editor state with the new content state
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
@@ -170,6 +125,56 @@ const SuggestionList = ({ positions, suggestions, editorRef, setEditorState, set
 
                 } else {
                     // If there is no closing '}' character, simply insert the selected suggestion at the cursor position
+                    const newContentState = Modifier.insertText(contentState, selection, suggestion);
+                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
+                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    setShowSuggestions(false);
+
+                    // Move the cursor to the end of the text..
+                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
+                    setEditorState(finalEditorState);
+                }
+            }
+
+
+            // Check to opens the '[]' Segment field..
+            if (openingAngleBraceIndex !== -1) {
+
+                console.log("====== [] =====");
+
+                closingBrace = ']';
+                // Find the index of the closing ']' character after the opening '[' character.
+                const closingAngelBraceIndex = currentText.indexOf(']', openingAngleBraceIndex);
+
+                if (closingAngelBraceIndex !== -1) {
+                    // Replace the text inside the curly brackets with the selected suggestion
+                    const newText = currentText.substring(openingAngleBraceIndex + 1, closingAngelBraceIndex - 1) + suggestion + currentText.substring(closingAngelBraceIndex);
+
+                    // Create a new content state with the updated text
+                    const newContentState = Modifier.replaceText(
+                        contentState,
+                        selection.merge({
+                            anchorOffset: openingAngleBraceIndex,
+                            focusOffset: closingAngelBraceIndex + closingBrace.length + suggestion.length,
+                        }),
+                        newText
+                    );
+
+                    // console.log("New Text -- ", newText);
+                    // console.log("making starting [ : ", currentText.substring(openingAngleBraceIndex + 1, closingAngelBraceIndex - 1));
+                    // console.log("ending with ] : ", currentText.substring(closingAngelBraceIndex));
+
+                    // Update the editor state with the new content state
+                    const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
+                    setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));
+                    setShowSuggestions(false);
+
+                    // Move the cursor to the end of the text..
+                    const finalEditorState = EditorState.moveFocusToEnd(newEditorState);
+                    setEditorState(finalEditorState);
+
+                } else {
+                    // If there is no closing ']' character, simply insert the selected suggestion at the cursor position
                     const newContentState = Modifier.insertText(contentState, selection, suggestion);
                     const newEditorState = EditorState.push(currentEditorState, newContentState, 'insert-characters');
                     setEditorState(EditorState.push(currentEditorState, newContentState, 'insert-characters'));

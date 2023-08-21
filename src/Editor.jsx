@@ -116,9 +116,6 @@ const EditorComponent = () => {
     }
 
 
-    console.log(currentChar.length);
-
-
     // Check if the current character is an opening '{{' and if the suggestion list is shown
     if (currentText.slice(currentOffset - 2, currentOffset) === '{{' && showMergeSugggestions && differenceWithSingleBracket) {
       // Automatically add '}' after inserting suggestion
@@ -139,9 +136,6 @@ const EditorComponent = () => {
       setEditorState(newEditorState);
 
     }
-
-
-    console.log('Current Slice -- ', currentText.slice(currentOffset - 2, currentOffset));
 
     // Check if the current character is an opening '{' and if the suggestion list is shown
     if (currentChar === '{' && showSuggestions && !differenceWithSingleBracket) {
