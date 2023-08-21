@@ -90,11 +90,14 @@ const EditorComponent = () => {
     // Update the editor state
     setEditorState(state);
 
+    let differenceWithSingleBracket = false;
+
     // Check if the current charecter is two opening curly bracs '{{'..
     if (currentText.slice(currentOffset - 2, currentOffset) === '{{') {
       setShowSuggestions(false);
       setShowSegmentSuggestions(false);
       setShowMergeSuggestions(true);
+      differenceWithSingleBracket = true;
 
     } else if (currentChar === '[') {
       setShowSuggestions(false);
@@ -105,7 +108,8 @@ const EditorComponent = () => {
       setShowSuggestions(true);
       setShowMergeSuggestions(false);
       setShowSegmentSuggestions(false);
-    }else {
+      differenceWithSingleBracket = false;
+    } else {
       setShowSuggestions(false);
       setShowMergeSuggestions(false);
       setShowSegmentSuggestions(false);
@@ -115,13 +119,13 @@ const EditorComponent = () => {
     console.log(currentChar.length);
 
 
-     // Check if the current character is an opening '{{' and if the suggestion list is shown
-     if (currentChar === '{{' && showMergeSugggestions) {
+    // Check if the current character is an opening '{{' and if the suggestion list is shown
+    if (currentText.slice(currentOffset - 2, currentOffset) === '{{' && showMergeSugggestions && differenceWithSingleBracket) {
       // Automatically add '}' after inserting suggestion
       const newContentState = state.getCurrentContent();
       const newSelection = selection.merge({
-        anchorOffset: currentOffset + 1,
-        focusOffset: currentOffset + 1,
+        anchorOffset: currentOffset + 2,
+        focusOffset: currentOffset + 2,
 
       });
 
@@ -133,12 +137,14 @@ const EditorComponent = () => {
 
       const newEditorState = EditorState.push(state, newContentStateWithClosingBracket, 'insert-characters');
       setEditorState(newEditorState);
+
     }
 
+
+    console.log('Current Slice -- ', currentText.slice(currentOffset - 2, currentOffset));
+
     // Check if the current character is an opening '{' and if the suggestion list is shown
-    if (currentChar === '{' && showSuggestions) {
-      console.log(currentChar.length);
-      // Automatically add '}' after inserting suggestion
+    if (currentChar === '{' && showSuggestions && !differenceWithSingleBracket) {
       const newContentState = state.getCurrentContent();
       const newSelection = selection.merge({
         anchorOffset: currentOffset + 1,
